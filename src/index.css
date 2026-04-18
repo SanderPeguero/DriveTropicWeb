@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme {
+  /* Logo Colors */
+  --color-brand-primary: #1a3a5a; /* Drive Blue */
+  --color-brand-secondary: #6db33f; /* Rent a Car Green */
+  --color-brand-accent: #4da8da; /* Wave/Sky Blue */
+  --color-brand-neutral: #666666; /* Tropic Grey */
+  --color-brand-light: #f8fbfd; /* Very soft blue-white */
+  --color-brand-white: #ffffff;
+  
+  --font-heading: "Outfit", sans-serif;
+  --font-body: "Inter", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-brand-light text-brand-primary font-body antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-bold text-brand-primary tracking-tight;
+  }
+}
+
+/* UI Components - Simplicity focus */
+.card-simple {
+  @apply bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-brand-primary/5 transition-all duration-300;
+}
+
+.btn-primary {
+  @apply bg-brand-secondary hover:bg-brand-primary text-white font-bold py-3 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2;
+}
+
+.btn-outline {
+  @apply border-2 border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white font-bold py-3 px-6 rounded-2xl transition-all duration-300;
+}
+
+/* Glassmorphism subtle */
+.glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 51, 102, 0.05);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-brand-light;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-brand-primary/20 rounded-full hover:bg-brand-primary/40 transition-colors;
+}
