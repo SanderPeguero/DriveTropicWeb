@@ -42,6 +42,90 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(0, 51, 102, 0.05);
+  /* Modern Hero System */
+  .hero-container {
+    padding: var(--spacing-4);
+    @media (min-width: 768px) {
+      padding: var(--spacing-8) var(--spacing-12);
+    }
+  }
+
+  .hero-card {
+    background: #ffffff;
+    border-radius: 0;
+    overflow: hidden;
+    position: relative;
+    display: grid;
+    grid-template-areas: "hero-stack";
+    min-height: 100vh;
+  }
+
+  .hero-inner-bg {
+    grid-area: hero-stack;
+    position: relative;
+    z-index: 0;
+  }
+
+  .hero-inner-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
+  }
+
+  .hero-inner-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 40%, rgba(255,255,255,0) 100%);
+    z-index: 1;
+    @media (max-width: 1023px) {
+      background: linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.9) 70%, rgba(255,255,255,1) 100%);
+    }
+  }
+
+  .hero-content {
+    grid-area: hero-stack;
+    position: relative;
+    z-index: 10;
+    padding: var(--spacing-20);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    @media (min-width: 1024px) {
+      padding: var(--spacing-40);
+      max-width: 60%;
+    }
+  }
+
+  .hero-image-container {
+    flex: 1.2;
+    position: relative;
+    overflow: hidden;
+    min-height: 40vh;
+    @media (min-width: 1024px) {
+      min-height: auto;
+    }
+  }
+
+  .hero-image-container img {
+    width: 100%;
+    height: 100%;
+    object-position: center bottom;
+    object-fit: cover;
+  }
+
+  .tagline {
+    font-size: 0.75rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--color-brand-secondary);
+    margin-bottom: var(--spacing-8);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
 }
 
 /* Custom Scrollbar */
