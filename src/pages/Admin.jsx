@@ -39,7 +39,7 @@ const Admin = () => {
       year: newVehicle.year, 
       price: parseFloat(newVehicle.price), 
       deposit: parseFloat(newVehicle.deposit), 
-      image: newVehicle.image || '/src/assets/nissan-march.png' 
+      image: newVehicle.image || 'https://ejemplo.com/auto.png' 
     });
     setNewVehicle({ name: '', year: '', price: '', deposit: '', image: '', category: 'Económicos' });
     setShowAddForm(false);
@@ -238,7 +238,7 @@ const Admin = () => {
                     <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Imagen URL</label>
                     <input 
                       type="text" 
-                      placeholder="Ej: /src/assets/..."
+                      placeholder="Ej: https://misitio.com/auto.jpg"
                       className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl font-bold outline-none"
                       value={editingVehicle ? editingVehicle.image : newVehicle.image}
                       onChange={(e) => editingVehicle ? setEditingVehicle({...editingVehicle, image: e.target.value}) : setNewVehicle({...newVehicle, image: e.target.value})}

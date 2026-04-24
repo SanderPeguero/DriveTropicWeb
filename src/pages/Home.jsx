@@ -93,7 +93,7 @@ const Home = () => {
           {/* Background Image Layer */}
           <div className="col-start-1 row-start-1 h-full w-full z-0 overflow-hidden">
             <img
-              src="/src/assets/hero-beach.jpg"
+              src={heroBeachImg}
               alt="Luxury Car in Punta Cana"
               className="w-full h-full object-cover"
             />

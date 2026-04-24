@@ -4,28 +4,33 @@ import { doc, onSnapshot, updateDoc, setDoc, getDoc } from 'firebase/firestore';
 
 const VehicleContext = createContext();
 
+import nissanMarchImg from '../assets/nissan-march.png';
+import kiaPicantoImg from '../assets/kia-picanto.png';
+import hyundaiElantraImg from '../assets/hyundai-elantra.png';
+import geelyGx3Img from '../assets/geely-gx3.png';
+
 const INITIAL_VEHICLES = [
   {
     category: 'Económicos',
     items: [
-      { id: 1, name: 'Nissan March', year: '2019', price: 34.99, image: '/src/assets/nissan-march.png', deposit: 100 },
-      { id: 2, name: 'Nissan Note', year: '2019', price: 34.99, image: '/src/assets/nissan-march.png', deposit: 100 },
-      { id: 3, name: 'Kia Picanto', year: '2019', price: 38.99, image: '/src/assets/kia-picanto.png', deposit: 100 },
+      { id: 1, name: 'Nissan March', year: '2019', price: 34.99, image: nissanMarchImg, deposit: 100 },
+      { id: 2, name: 'Nissan Note', year: '2019', price: 34.99, image: nissanMarchImg, deposit: 100 },
+      { id: 3, name: 'Kia Picanto', year: '2019', price: 38.99, image: kiaPicantoImg, deposit: 100 },
     ]
   },
   {
     category: 'Sedanes',
     items: [
-      { id: 4, name: 'Hyundai Elantra', year: '2020', price: 43.99, image: '/src/assets/hyundai-elantra.png', deposit: 100 },
-      { id: 5, name: 'Kia K5', year: '2019', price: 43.99, image: '/src/assets/hyundai-elantra.png', deposit: 100 },
-      { id: 6, name: 'Kia Rio', year: '2019', price: 43.99, image: '/src/assets/hyundai-elantra.png', deposit: 100 },
+      { id: 4, name: 'Hyundai Elantra', year: '2020', price: 43.99, image: hyundaiElantraImg, deposit: 100 },
+      { id: 5, name: 'Kia K5', year: '2019', price: 43.99, image: hyundaiElantraImg, deposit: 100 },
+      { id: 6, name: 'Kia Rio', year: '2019', price: 43.99, image: hyundaiElantraImg, deposit: 100 },
     ]
   },
   {
     category: 'SUV / Jeepetas',
     items: [
-      { id: 7, name: 'Hyundai Venue', year: '2024', price: 59.99, image: '/src/assets/geely-gx3.png', deposit: 200 },
-      { id: 8, name: 'Geely GX3', year: '2025', price: 69.99, image: '/src/assets/geely-gx3.png', deposit: 200 },
+      { id: 7, name: 'Hyundai Venue', year: '2024', price: 59.99, image: geelyGx3Img, deposit: 200 },
+      { id: 8, name: 'Geely GX3', year: '2025', price: 69.99, image: geelyGx3Img, deposit: 200 },
     ]
   }
 ];
