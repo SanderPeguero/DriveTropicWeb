@@ -24,6 +24,7 @@ import { useVehicles } from '../context/VehicleContext';
 // Assets
 import logoImg from '../assets/logo.png';
 import heroImg from '../assets/hero.png';
+import heroBeachImg from '../assets/hero-beach.jpg';
 
 const Home = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
