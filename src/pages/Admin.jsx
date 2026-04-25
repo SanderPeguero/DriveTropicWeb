@@ -17,6 +17,7 @@ import {
 import { useVehicles } from '../context/VehicleContext';
 import { Link } from 'react-router-dom';
 import logoImg from '../assets/logo.png';
+import fallbackCarImg from '../assets/geely-gx3.png';
 
 const Admin = () => {
   const { vehicles, loading, addVehicle, updateVehicle, deleteVehicle } = useVehicles();
@@ -119,7 +120,7 @@ const Admin = () => {
                       <tr key={car.id} className="group hover:bg-gray-50/50 transition-colors">
                         <td className="py-4">
                           <div className="flex items-center gap-4">
-                            <img src={car.image} className="w-12 h-12 rounded-xl object-cover bg-gray-100" alt="" />
+                            <img src={car.image?.includes('http') ? car.image : fallbackCarImg} className="w-12 h-12 rounded-xl object-cover bg-gray-100 shadow-sm" alt={car.name} />
                             <span className="font-bold text-brand-primary">{car.name}</span>
                           </div>
                         </td>

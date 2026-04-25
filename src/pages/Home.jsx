@@ -25,6 +25,7 @@ import { useVehicles } from '../context/VehicleContext';
 import logoImg from '../assets/logo.png';
 import heroImg from '../assets/hero.png';
 import heroBeachImg from '../assets/hero-beach.jpg';
+import fallbackCarImg from '../assets/geely-gx3.png';
 
 const Home = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -175,7 +176,7 @@ const Home = () => {
                         className="card-simple p-4 group"
                       >
                         <div className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-gray-100 mb-6">
-                          <img src={car.image} alt={car.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                          <img src={car.image?.includes('http') ? car.image : fallbackCarImg} alt={car.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                           <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-xl font-bold text-xs uppercase tracking-widest text-brand-primary border border-gray-100 shadow-sm">
                             Modelo {car.year}
                           </div>
