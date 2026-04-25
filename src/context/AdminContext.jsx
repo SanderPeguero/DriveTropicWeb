@@ -82,12 +82,13 @@ export const AdminProvider = ({ children }) => {
   }, []);
 
   // 3. User Facing Logic: Log visit & session
-  const logVisit = async () => {
+  const logVisit = React.useCallback(async () => {
     try {
       if (!sessionStorage.getItem('drive_tropic_visited')) {
+        // Bloqueo síncrono (evita race conditions en re-renders)
+        sessionStorage.setItem('drive_tropic_visited', 'true');
         // Increment global counter
         await setDoc(doc(db, 'settings', 'analytics'), { totalVisits: increment(1) }, { merge: true });
-        sessionStorage.setItem('drive_tropic_visited', 'true');
       }
 
       // Heartbeat for Active Session
@@ -100,7 +101,7 @@ export const AdminProvider = ({ children }) => {
     } catch (e) {
       console.log("Analytics error (ignored)", e);
     }
-  };
+  }, []);
 
   // 4. Send Reservation Logic
   const createReservation = async (reservationData) => {
