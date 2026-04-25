@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, 
@@ -34,6 +34,13 @@ const Admin = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   
   const [configForm, setConfigForm] = useState({ whatsappNumber: config?.whatsappNumber || '' });
+
+  // Sincronizar el formulario de configuración una vez que Firebase traiga la data
+  useEffect(() => {
+    if (config && config.whatsappNumber) {
+      setConfigForm({ whatsappNumber: config.whatsappNumber });
+    }
+  }, [config]);
 
   if (loading) {
     return (

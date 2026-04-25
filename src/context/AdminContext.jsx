@@ -119,7 +119,11 @@ export const AdminProvider = ({ children }) => {
 
   // 5. Update Config
   const updateConfig = async (newConfig) => {
-    await updateDoc(doc(db, 'settings', 'config'), newConfig);
+    try {
+      await setDoc(doc(db, 'settings', 'config'), newConfig, { merge: true });
+    } catch (error) {
+      console.error("Error al guardar config:", error);
+    }
   };
 
   const updateReservationStatus = async (id, status) => {
