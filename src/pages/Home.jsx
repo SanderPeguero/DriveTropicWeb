@@ -20,6 +20,7 @@ import {
   MessageSquare
 } from 'lucide-react';
 import { useVehicles } from '../context/VehicleContext';
+import { useAdmin } from '../context/AdminContext';
 
 // Assets
 import logoImg from '../assets/logo.png';
@@ -30,6 +31,33 @@ import fallbackCarImg from '../assets/geely-gx3.png';
 const Home = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { vehicles } = useVehicles();
+  const { logVisit, config, createReservation } = useAdmin();
+  const [selectedCar, setSelectedCar] = useState(null);
+  const [resForm, setResForm] = useState({ name: '', phone: '', location: '', startDate: '', endDate: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  React.useEffect(() => {
+    if (logVisit) logVisit();
+  }, [logVisit]);
+
+  const handleReservationSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    await createReservation({
+      carName: selectedCar.name,
+      carId: selectedCar.id,
+      customer: { name: resForm.name, phone: resForm.phone, location: resForm.location },
+      dates: { start: resForm.startDate, end: resForm.endDate }
+    });
+    
+    const msg = `🚗 *Nueva Reserva*\n\nHola Drive Tropic, soy *${resForm.name}*.\nMe gustaría reservar el *${selectedCar.name}*.\n📅 Desde: ${resForm.startDate}\n📅 Hasta: ${resForm.endDate}\n📍 Entrega en: ${resForm.location}.`;
+    const url = `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+    
+    setIsSubmitting(false);
+    setSelectedCar(null);
+    setResForm({ name: '', phone: '', location: '', startDate: '', endDate: '' });
+  };
 
   const NavLinks = () => (
     <>
@@ -194,7 +222,7 @@ const Home = () => {
                                 <span className="text-gray-400 text-xs font-bold">USD</span>
                               </div>
                             </div>
-                            <button className="bg-brand-secondary/10 text-brand-secondary px-6 py-3 rounded-2xl font-black text-sm hover:bg-brand-secondary hover:text-white transition-all uppercase tracking-widest">
+                            <button onClick={() => setSelectedCar(car)} className="bg-brand-secondary/10 text-brand-secondary px-6 py-3 rounded-2xl font-black text-sm hover:bg-brand-secondary hover:text-white transition-all uppercase tracking-widest">
                               Reservar
                             </button>
                           </div>
@@ -334,6 +362,70 @@ const Home = () => {
           </div>
         </div>
       </footer>
+
+      {/* Reservation Modal */}
+      <AnimatePresence>
+        {selectedCar && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedCar(null)}
+              className="absolute inset-0 bg-brand-primary/20 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="relative bg-white w-full max-w-lg rounded-3xl p-8 shadow-2xl overflow-y-auto max-h-[90vh]"
+            >
+              <div className="flex justify-between items-center mb-8 border-b border-gray-100 pb-4">
+                <div>
+                  <h3 className="text-2xl font-black text-brand-primary mb-1">Reservar {selectedCar.name}</h3>
+                  <p className="text-brand-secondary font-bold text-sm">${selectedCar.price} USD / día</p>
+                </div>
+                <button onClick={() => setSelectedCar(null)} className="p-2 bg-gray-50 text-brand-primary hover:bg-red-50 hover:text-red-500 rounded-full transition-colors">
+                  <X size={20} />
+                </button>
+              </div>
+
+              <form onSubmit={handleReservationSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Nombre Completo</label>
+                  <input type="text" required value={resForm.name} onChange={e => setResForm({...resForm, name: e.target.value})} className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl font-bold focus:ring-2 focus:ring-brand-secondary outline-none" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Teléfono</label>
+                    <input type="tel" required value={resForm.phone} onChange={e => setResForm({...resForm, phone: e.target.value})} className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl font-bold focus:ring-2 focus:ring-brand-secondary outline-none" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Lugar de Entrega</label>
+                    <input type="text" required value={resForm.location} onChange={e => setResForm({...resForm, location: e.target.value})} className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl font-bold focus:ring-2 focus:ring-brand-secondary outline-none" placeholder="Ej: Aeropuerto" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Fecha Inicio</label>
+                    <input type="date" required value={resForm.startDate} onChange={e => setResForm({...resForm, startDate: e.target.value})} className="w-full p-4 bg-gray-50 border border-gray-100 rounded-xl font-bold focus:ring-2 focus:ring-brand-secondary outline-none text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Fecha Fin</label>
+                    <input type="date" required value={resForm.endDate} onChange={e => setResForm({...resForm, endDate: e.target.value})} className="w-full p-4 bg-gray-50 border border-gray-100 rounded-xl font-bold focus:ring-2 focus:ring-brand-secondary outline-none text-sm" />
+                  </div>
+                </div>
+
+                <div className="pt-6">
+                  <button type="submit" disabled={isSubmitting} className="w-full btn-primary py-5 text-base flex justify-center items-center gap-2 disabled:bg-gray-300">
+                    {isSubmitting ? 'Procesando...' : 'Confirmar y Reservar via WhatsApp'}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
