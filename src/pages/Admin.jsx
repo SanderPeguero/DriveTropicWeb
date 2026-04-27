@@ -16,7 +16,8 @@ import {
   Users,
   Eye,
   CheckCircle2,
-  XCircle
+  XCircle,
+  Lock
 } from 'lucide-react';
 import { useVehicles } from '../context/VehicleContext';
 import { useAdmin } from '../context/AdminContext';
@@ -35,6 +36,13 @@ const Admin = () => {
   
   const [configForm, setConfigForm] = useState({ whatsappNumber: config?.whatsappNumber || '' });
 
+  // Auth State
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    sessionStorage.getItem('dt_admin_auth') === 'true'
+  );
+  const [loginForm, setLoginForm] = useState({ username: '', password: '' });
+  const [loginError, setLoginError] = useState(false);
+
   // Sincronizar el formulario de configuración una vez que Firebase traiga la data
   useEffect(() => {
     if (config && config.whatsappNumber) {
@@ -42,10 +50,48 @@ const Admin = () => {
     }
   }, [config]);
 
-  if (loading) {
+  const handleLogin = (e) => {
+    e.preventDefault();
+    // Static Basic Validation Block
+    if (loginForm.username === 'admin' && loginForm.password === 'admin123') {
+      sessionStorage.setItem('dt_admin_auth', 'true');
+      setIsAuthenticated(true);
+      setLoginError(false);
+    } else {
+      setLoginError(true);
+    }
+  };
+
+  if (loading && isAuthenticated) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="w-12 h-12 border-4 border-brand-secondary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  // Auth Gate Render
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="bg-white max-w-sm w-full rounded-3xl p-8 shadow-xl text-center">
+          <div className="bg-brand-primary p-4 rounded-2xl mx-auto w-16 h-16 flex items-center justify-center mb-6">
+            <Lock className="text-white" size={32} />
+          </div>
+          <h2 className="text-3xl font-black text-brand-primary mb-2">Acceso Admin</h2>
+          <p className="text-gray-400 font-medium mb-8 text-sm">Ingrese sus credenciales.</p>
+          
+          <form onSubmit={handleLogin} className="space-y-4">
+            <input type="text" placeholder="Usuario" className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl font-bold focus:ring-2 focus:ring-brand-secondary outline-none text-center" value={loginForm.username} onChange={e => setLoginForm({...loginForm, username: e.target.value})} required />
+            <input type="password" placeholder="Contraseña" className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl font-bold focus:ring-2 focus:ring-brand-secondary outline-none text-center" value={loginForm.password} onChange={e => setLoginForm({...loginForm, password: e.target.value})} required />
+            {loginError && <p className="text-red-500 font-bold text-[10px] uppercase tracking-widest">Credenciales incorrectas.</p>}
+            <button type="submit" className="w-full btn-primary py-4 mt-2">Ingresar</button>
+          </form>
+          
+          <div className="mt-8 pt-6 border-t border-gray-100">
+             <Link to="/" className="text-brand-primary/40 font-bold text-[10px] uppercase tracking-widest hover:text-brand-secondary transition-colors">Volver al sitio público</Link>
+          </div>
+        </div>
       </div>
     );
   }
@@ -78,12 +124,12 @@ const Admin = () => {
   const PendingReservationsCount = reservations.filter(r => r.status === 'pending').length;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="h-screen bg-gray-50 flex overflow-hidden">
       {/* Sidebar */}
-      <aside className="w-64 bg-brand-primary text-white p-6 hidden md:flex flex-col">
+      <aside className="w-64 bg-brand-primary text-white p-6 hidden md:flex flex-col flex-shrink-0 h-full overflow-y-auto">
         <div className="flex flex-col items-center gap-3 mb-12">
-          <div className="bg-white p-3 rounded-2xl shadow-lg">
-            <img src={logoImg} alt="Logo" className="h-10 w-auto" />
+          <div className="mb-2">
+            <img src={logoImg} alt="Logo" className="h-12 w-auto grayscale brightness-200" />
           </div>
           <span className="text-[10px] font-black tracking-[0.3em] uppercase text-white/40">Admin Panel</span>
         </div>
@@ -109,7 +155,7 @@ const Admin = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-grow p-4 md:p-12 overflow-y-auto">
+      <main className="flex-grow p-4 md:p-12 overflow-y-auto h-full relative">
         
         {/* VIEW: DASHBOARD */}
         {activeTab === 'dashboard' && (
