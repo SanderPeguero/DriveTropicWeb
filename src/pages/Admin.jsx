@@ -17,7 +17,8 @@ import {
   Eye,
   CheckCircle2,
   XCircle,
-  Lock
+  Lock,
+  ShieldCheck
 } from 'lucide-react';
 import { useVehicles } from '../context/VehicleContext';
 import { useAdmin } from '../context/AdminContext';
@@ -391,6 +392,22 @@ const Admin = () => {
                   <button type="submit" className="btn-primary py-4 px-8 w-full md:w-auto">Guardar y Aplicar Todos los Entornos</button>
                 </div>
               </form>
+            </div>
+
+            {/* Developer Contact Support Card */}
+            <div className="mt-8 bg-brand-light p-6 rounded-3xl border border-brand-primary/10 shadow-sm">
+              <h4 className="text-brand-primary font-black mb-2 flex items-center gap-2">
+                <ShieldCheck size={18} /> Soporte Técnico
+              </h4>
+              <p className="text-sm font-medium text-brand-primary/70 mb-1">
+                Plataforma web desarrollada y mantenida por <a href="https://atomdevteam.com" target="_blank" rel="noreferrer" className="text-brand-secondary hover:underline">atomdevteam.com</a>.
+              </p>
+              <p className="text-sm font-medium text-brand-primary/70">
+                En caso de fallos críticos del sistema, mantenimiento o necesidad de modificaciones, contactar directamente a:
+              </p>
+              <p className="mt-3 font-black text-brand-primary text-sm flex items-center gap-2 bg-white w-fit px-4 py-2 rounded-xl border border-brand-primary/10 shadow-sm">
+                Sander Peguero <span className="text-gray-300">|</span> <a href="https://wa.me/18295063137" target="_blank" rel="noreferrer" className="text-brand-secondary hover:underline">+1 829-506-3137</a>
+              </p>
             </div>
           </div>
         )}

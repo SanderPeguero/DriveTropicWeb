@@ -374,7 +374,12 @@ const Home = () => {
           </div>
 
           <div className="mt-20 pt-10 border-t border-gray-50 flex flex-col md:flex-row justify-between gap-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-            <p>© 2026 DRIVE TROPIC RENT A CAR</p>
+            <div className="flex flex-col gap-2">
+              <p>© 2026 DRIVE TROPIC RENT A CAR</p>
+              <p>
+                Website creada por <a href="https://atomdevteam.com" target="_blank" rel="noreferrer" className="hover:text-brand-secondary transition-colors underline decoration-gray-200 underline-offset-4">atomdevteam.com</a>
+              </p>
+            </div>
             <div className="flex gap-8">
               <a href="#">Privacidad</a>
               <a href="#">Términos</a>
