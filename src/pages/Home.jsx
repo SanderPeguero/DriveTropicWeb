@@ -128,16 +128,16 @@ const Home = () => {
               className="w-full h-full object-cover"
             />
             {/* Ultra-clear accessibility overlay */}
-            <div className="absolute inset-0 bg-white/20 lg:bg-gradient-to-r lg:from-white/65 lg:via-white/30 lg:to-transparent z-10" />
+            <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/30 to-transparent lg:bg-gradient-to-r lg:from-white/65 lg:via-white/30 lg:to-transparent z-10" />
           </div>
 
           {/* Content Side */}
-          <div className="col-start-1 row-start-1 z-20 hero-content !bg-transparent md:px-8 max-w-4xl">
+          <div className="col-start-1 row-start-1 z-20 hero-content !bg-transparent w-full px-8 md:px-12 max-w-4xl pt-24 md:pt-0">
             <motion.div
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
-              className="inline-flex items-center gap-2 bg-brand-secondary/15 border border-brand-secondary/30 text-brand-secondary px-4 py-2 flex-shrink-0 rounded-full text-xs font-bold tracking-[0.1em] mb-6 w-fit backdrop-blur-md mt-6 lg:mt-0"
+              className="inline-flex items-center gap-2 bg-brand-secondary/15 border border-brand-secondary/30 text-brand-secondary px-3 py-1.5 md:px-4 md:py-2 flex-shrink-0 rounded-full text-[10px] md:text-sm font-bold tracking-[0.1em] mb-4 md:mb-6 w-fit backdrop-blur-md mt-6 lg:mt-0"
             >
               <MapPin className="w-4 h-4" /> PUNTA CANA • REPÚBLICA DOMINICANA
             </motion.div>
@@ -146,7 +146,7 @@ const Home = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="text-4xl md:text-5xl lg:text-6xl font-black text-brand-primary leading-[1.05] mb-6 tracking-tight"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-brand-primary leading-[1.1] mb-4 md:mb-6 tracking-tight"
             >
               Simple. Seguro.<br />
               <span className="text-brand-secondary italic">Tropical.</span>
@@ -156,7 +156,7 @@ const Home = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="text-base md:text-lg text-brand-primary/80 mb-10 max-w-sm font-medium leading-relaxed"
+              className="text-sm md:text-lg text-brand-primary/80 mb-8 md:mb-10 max-w-xs md:max-w-sm font-medium leading-relaxed"
             >
               Renta tu auto hoy sin procesos complejos. Entrega directa en el Aeropuerto de Punta Cana sin costo adicional.
             </motion.p>
@@ -165,13 +165,13 @@ const Home = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="flex flex-wrap items-center gap-4"
+              className="flex flex-row flex-wrap gap-2 sm:gap-3 mt-4 w-full"
             >
-              <a href="#flota" className="bg-brand-secondary text-white px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-brand-secondary/90 transition-all shadow-lg active:scale-95 text-base w-full md:w-auto">
-                Ver Vehículos <ChevronRight className="w-5 h-5" />
+              <a href="#flota" className="bg-brand-secondary text-white py-3.5 sm:py-4 px-4 sm:px-8 rounded-2xl font-black text-[11px] sm:text-[13px] uppercase tracking-widest flex items-center justify-center gap-1 md:gap-2 hover:bg-opacity-90 transition-all shadow-lg shadow-brand-secondary/30 flex-1 md:flex-none whitespace-nowrap">
+                Ver Autos <ChevronRight size={16} />
               </a>
-              <a href="#flota" className="bg-white/40 backdrop-blur-md border border-brand-primary text-brand-primary px-8 py-4 rounded-xl font-bold hover:bg-brand-primary hover:text-white transition-all active:scale-95 text-base w-full md:w-auto text-center">
-                Contáctanos
+              <a href="#contacto" className="bg-white text-brand-primary py-3.5 sm:py-4 px-4 sm:px-8 rounded-2xl font-black text-[11px] sm:text-[13px] uppercase tracking-widest flex items-center justify-center hover:bg-gray-50 transition-all shadow-md border border-gray-100 flex-1 md:flex-none whitespace-nowrap">
+                Contacto
               </a>
             </motion.div>
           </div>
