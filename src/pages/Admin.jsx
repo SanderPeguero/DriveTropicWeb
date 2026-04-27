@@ -34,7 +34,13 @@ const Admin = () => {
   const [newVehicle, setNewVehicle] = useState({ name: '', year: '', price: '', deposit: '', image: '', category: 'Económicos' });
   const [showAddForm, setShowAddForm] = useState(false);
   
-  const [configForm, setConfigForm] = useState({ whatsappNumber: config?.whatsappNumber || '' });
+  const [configForm, setConfigForm] = useState({ 
+    whatsappNumber: config?.whatsappNumber || '',
+    instagramUrl: config?.instagramUrl || '',
+    phoneNumber: config?.phoneNumber || '',
+    emailAddress: config?.emailAddress || '',
+    officeLocation: config?.officeLocation || ''
+  });
 
   // Auth State
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -45,8 +51,14 @@ const Admin = () => {
 
   // Sincronizar el formulario de configuración una vez que Firebase traiga la data
   useEffect(() => {
-    if (config && config.whatsappNumber) {
-      setConfigForm({ whatsappNumber: config.whatsappNumber });
+    if (config) {
+      setConfigForm({ 
+        whatsappNumber: config.whatsappNumber || '',
+        instagramUrl: config.instagramUrl || '',
+        phoneNumber: config.phoneNumber || '',
+        emailAddress: config.emailAddress || '',
+        officeLocation: config.officeLocation || ''
+      });
     }
   }, [config]);
 
@@ -317,7 +329,7 @@ const Admin = () => {
             <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
               <form onSubmit={handleConfigSave} className="space-y-6">
                 <div>
-                  <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Notificaciones: Número WhatsApp (Con código de país, sin el +)</label>
+                  <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">WhatsApp de Recepción</label>
                   <input 
                     type="text" 
                     value={configForm.whatsappNumber}
@@ -326,9 +338,58 @@ const Admin = () => {
                     className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl font-bold focus:ring-2 focus:ring-brand-secondary outline-none"
                     required
                   />
-                  <p className="text-xs text-gray-400 mt-2 font-medium">Este es el número que recibirá las confirmaciones cuando un usuario envíe una reserva desde el Home.</p>
+                  <p className="text-xs text-gray-400 mt-2 font-medium">Usado globalmente para botones WhatsApp vinculados en la web.</p>
                 </div>
-                <button type="submit" className="btn-primary py-4 px-8 w-max">Guardar y Aplicar</button>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Teléfono de Oficina</label>
+                    <input 
+                      type="text" 
+                      value={configForm.phoneNumber}
+                      onChange={(e) => setConfigForm({...configForm, phoneNumber: e.target.value})}
+                      placeholder="Ej: +1 809-123-4567"
+                      className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl font-bold focus:ring-2 focus:ring-brand-secondary outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Página de Instagram (URL)</label>
+                    <input 
+                      type="text" 
+                      value={configForm.instagramUrl}
+                      onChange={(e) => setConfigForm({...configForm, instagramUrl: e.target.value})}
+                      placeholder="https://instagram.com/drivetropic"
+                      className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl font-bold focus:ring-2 focus:ring-brand-secondary outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Correo Electrónico</label>
+                    <input 
+                      type="email" 
+                      value={configForm.emailAddress}
+                      onChange={(e) => setConfigForm({...configForm, emailAddress: e.target.value})}
+                      placeholder="info@drivetropic.com"
+                      className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl font-bold focus:ring-2 focus:ring-brand-secondary outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Dirección Física Web</label>
+                    <input 
+                      type="text" 
+                      value={configForm.officeLocation}
+                      onChange={(e) => setConfigForm({...configForm, officeLocation: e.target.value})}
+                      placeholder="Aeropuerto Punta Cana"
+                      className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl font-bold focus:ring-2 focus:ring-brand-secondary outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-4 mt-6 border-t border-gray-100">
+                  <button type="submit" className="btn-primary py-4 px-8 w-full md:w-auto">Guardar y Aplicar Todos los Entornos</button>
+                </div>
               </form>
             </div>
           </div>

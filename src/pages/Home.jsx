@@ -17,8 +17,10 @@ import {
   CreditCard,
   Clock,
   Navigation,
-  MessageSquare
+  MessageSquare,
+  PhoneCall
 } from 'lucide-react';
+import { FaInstagram, FaWhatsapp } from 'react-icons/fa';
 import { useVehicles } from '../context/VehicleContext';
 import { useAdmin } from '../context/AdminContext';
 
@@ -82,9 +84,9 @@ const Home = () => {
 
           <div className="hidden md:flex items-center gap-10 font-bold text-brand-primary">
             <NavLinks />
-            <button className="bg-brand-secondary text-white px-8 py-3 rounded-2xl flex items-center gap-2 hover:bg-brand-primary transition-all shadow-md shadow-brand-secondary/20">
-              <MessageSquare className="w-5 h-5" /> Reservar Ahora
-            </button>
+            <a href={`https://wa.me/${config?.whatsappNumber || ''}`} target="_blank" rel="noreferrer" className="bg-brand-secondary text-white px-8 py-3 rounded-2xl flex items-center gap-2 hover:bg-brand-primary transition-all shadow-md shadow-brand-secondary/20">
+              <FaWhatsapp size={20} /> Reservar Ahora
+            </a>
           </div>
 
           <button className="md:hidden p-2 text-brand-primary" onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -106,9 +108,9 @@ const Home = () => {
               <a href="#servicios" onClick={() => setIsMenuOpen(false)}>Servicios</a>
               <a href="#requisitos" onClick={() => setIsMenuOpen(false)}>Requisitos</a>
             </div>
-            <button className="bg-brand-secondary text-white w-full max-w-xs py-5 rounded-3xl text-xl font-bold flex items-center justify-center gap-3">
-              <MessageSquare /> WhatsApp Reserva
-            </button>
+            <a href={`https://wa.me/${config?.whatsappNumber || ''}`} target="_blank" rel="noreferrer" className="bg-brand-secondary text-white w-full max-w-xs py-5 rounded-3xl text-xl font-bold flex items-center justify-center gap-3">
+              <FaWhatsapp size={24} /> WhatsApp Reserva
+            </a>
           </motion.div>
         )}
       </AnimatePresence>
@@ -132,12 +134,13 @@ const Home = () => {
           </div>
 
           {/* Content Side */}
-          <div className="col-start-1 row-start-1 z-20 hero-content !bg-transparent w-full px-8 md:px-12 max-w-4xl pt-24 md:pt-0">
+          {/* mb-24 empuja sutilmente todo el contenido hacia arriba en móvil, en MD se reinicia. */}
+          <div className="col-start-1 row-start-1 z-20 hero-content !bg-transparent w-full px-8 md:px-12 lg:px-16 max-w-6xl mb-24 md:mb-0">
             <motion.div
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
-              className="inline-flex items-center gap-2 bg-brand-secondary/15 border border-brand-secondary/30 text-brand-secondary px-3 py-1.5 md:px-4 md:py-2 flex-shrink-0 rounded-full text-[10px] md:text-sm font-bold tracking-[0.1em] mb-4 md:mb-6 w-fit backdrop-blur-md mt-6 lg:mt-0"
+              className="inline-flex items-center gap-2 bg-brand-secondary/15 border border-brand-secondary/30 text-brand-secondary px-3 py-1.5 md:px-5 md:py-2.5 flex-shrink-0 rounded-full text-[10px] md:text-sm font-bold tracking-[0.1em] mb-4 md:mb-8 w-fit backdrop-blur-md mt-6 lg:mt-0"
             >
               <MapPin className="w-4 h-4" /> PUNTA CANA • REPÚBLICA DOMINICANA
             </motion.div>
@@ -146,7 +149,7 @@ const Home = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-brand-primary leading-[1.1] mb-4 md:mb-6 tracking-tight"
+              className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-brand-primary leading-[1.1] md:leading-[1.05] mb-4 md:mb-8 tracking-tight"
             >
               Simple. Seguro.<br />
               <span className="text-brand-secondary italic">Tropical.</span>
@@ -156,7 +159,8 @@ const Home = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="text-sm md:text-lg text-brand-primary/80 mb-8 md:mb-10 max-w-xs md:max-w-sm font-medium leading-relaxed"
+              /* max-w-xl md expande fuertemente el texto hacia el centro en desktop para no verse aplastado a la izquierda */
+              className="text-sm md:text-xl text-brand-primary/80 mb-8 md:mb-12 max-w-xs md:max-w-xl font-medium leading-relaxed"
             >
               Renta tu auto hoy sin procesos complejos. Entrega directa en el Aeropuerto de Punta Cana sin costo adicional.
             </motion.p>
@@ -170,8 +174,8 @@ const Home = () => {
               <a href="#flota" className="bg-brand-secondary text-white py-3.5 sm:py-4 px-4 sm:px-8 rounded-2xl font-black text-[11px] sm:text-[13px] uppercase tracking-widest flex items-center justify-center gap-1 md:gap-2 hover:bg-opacity-90 transition-all shadow-lg shadow-brand-secondary/30 flex-1 md:flex-none whitespace-nowrap">
                 Ver Autos <ChevronRight size={16} />
               </a>
-              <a href="#contacto" className="bg-white text-brand-primary py-3.5 sm:py-4 px-4 sm:px-8 rounded-2xl font-black text-[11px] sm:text-[13px] uppercase tracking-widest flex items-center justify-center hover:bg-gray-50 transition-all shadow-md border border-gray-100 flex-1 md:flex-none whitespace-nowrap">
-                Contacto
+              <a href={`https://wa.me/${config?.whatsappNumber}`} target="_blank" rel="noreferrer" className="bg-white text-brand-primary py-3.5 sm:py-4 px-4 sm:px-8 rounded-2xl font-black text-[11px] sm:text-[13px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-gray-50 transition-all shadow-md border border-gray-100 flex-1 md:flex-none whitespace-nowrap">
+                <FaWhatsapp className="text-green-500" size={17} /> Contacto
               </a>
             </motion.div>
           </div>
@@ -328,26 +332,42 @@ const Home = () => {
                 Haciendo el alquiler de vehículos algo placentero en Punta Cana.
               </p>
               <div className="flex gap-4">
-                <a href="#" className="w-10 h-10 bg-brand-light rounded-xl flex items-center justify-center text-brand-primary hover:bg-brand-secondary hover:text-white transition-all"><Camera size={20} /></a>
-                <a href="#" className="w-10 h-10 bg-brand-light rounded-xl flex items-center justify-center text-brand-primary hover:bg-brand-secondary hover:text-white transition-all"><Share2 size={20} /></a>
-                <a href="#" className="w-10 h-10 bg-brand-light rounded-xl flex items-center justify-center text-brand-primary hover:bg-brand-secondary hover:text-white transition-all"><Phone size={20} /></a>
+                <a href={config?.instagramUrl || '#'} target="_blank" rel="noreferrer" className="w-12 h-12 bg-pink-50 rounded-2xl flex items-center justify-center text-pink-600 hover:bg-pink-500 hover:text-white transition-all shadow-sm">
+                  <FaInstagram size={22} />
+                </a>
+                <a href={`https://wa.me/${config?.whatsappNumber || ''}`} target="_blank" rel="noreferrer" className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center text-green-600 hover:bg-green-500 hover:text-white transition-all shadow-sm">
+                  <FaWhatsapp size={22} />
+                </a>
+                <a href={`tel:${config?.phoneNumber || ''}`} className="w-12 h-12 bg-brand-light rounded-2xl flex items-center justify-center text-brand-primary hover:bg-brand-secondary hover:text-white transition-all shadow-sm">
+                  <PhoneCall size={22} />
+                </a>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-2 gap-16 md:gap-24">
+            <div className="grid grid-cols-2 lg:grid-cols-2 gap-16 md:gap-24">
               <div>
                 <h5 className="font-black text-brand-primary mb-6 uppercase tracking-widest text-xs">Empresa</h5>
-                <ul className="space-y-4 text-brand-primary/60 font-bold text-sm">
+                <ul className="space-y-4 text-brand-primary/60 font-medium text-sm">
                   <li><a href="#flota" className="hover:text-brand-secondary transition-colors">Vehículos</a></li>
                   <li><a href="#servicios" className="hover:text-brand-secondary transition-colors">Servicios</a></li>
                   <li><a href="#requisitos" className="hover:text-brand-secondary transition-colors">Políticas</a></li>
                 </ul>
               </div>
-              <div>
-                <h5 className="font-black text-brand-primary mb-6 uppercase tracking-widest text-xs">Contacto</h5>
-                <ul className="space-y-4 text-brand-primary/60 font-bold text-sm">
-                  <li className="flex items-center gap-2"><Mail size={14} /> info@drivetropic.com</li>
-                  <li className="flex items-center gap-2"><MapPin size={14} /> Aeropuerto Punta Cana</li>
+              <div id="contacto">
+                <h5 className="font-black text-brand-primary mb-6 uppercase tracking-widest text-xs">Soporte y Reservas</h5>
+                <ul className="space-y-6">
+                  <li className="flex items-center gap-3 text-brand-primary/80 font-medium text-sm">
+                    <span className="w-8 h-8 rounded-full bg-brand-light flex items-center justify-center text-brand-primary">
+                      <Mail size={14} />
+                    </span>
+                    {config?.emailAddress || 'info@drivetropic.com'}
+                  </li>
+                  <li className="flex items-center gap-3 text-brand-primary/80 font-medium text-sm">
+                    <span className="w-8 h-8 rounded-full bg-brand-light flex items-center justify-center text-brand-primary">
+                      <MapPin size={14} />
+                    </span>
+                    {config?.officeLocation || 'Aeropuerto Punta Cana'}
+                  </li>
                 </ul>
               </div>
             </div>
