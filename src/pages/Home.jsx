@@ -84,7 +84,7 @@ const Home = () => {
 
           <div className="hidden md:flex items-center gap-10 font-bold text-brand-primary">
             <NavLinks />
-            <a href={`https://wa.me/${config?.whatsappNumber || ''}`} target="_blank" rel="noreferrer" className="bg-brand-secondary text-white px-8 py-3 rounded-2xl flex items-center gap-2 hover:bg-brand-primary transition-all shadow-md shadow-brand-secondary/20">
+            <a href={`https://wa.me/${config?.whatsappNumber || ''}?text=${encodeURIComponent('Hola Drive Tropic quiero hacer una reserva')}`} target="_blank" rel="noreferrer" className="bg-brand-secondary text-white px-8 py-3 rounded-2xl flex items-center gap-2 hover:bg-brand-primary transition-all shadow-md shadow-brand-secondary/20">
               <FaWhatsapp size={20} /> Reservar Ahora
             </a>
           </div>
@@ -108,7 +108,7 @@ const Home = () => {
               <a href="#servicios" onClick={() => setIsMenuOpen(false)}>Servicios</a>
               <a href="#requisitos" onClick={() => setIsMenuOpen(false)}>Requisitos</a>
             </div>
-            <a href={`https://wa.me/${config?.whatsappNumber || ''}`} target="_blank" rel="noreferrer" className="bg-brand-secondary text-white w-full max-w-xs py-5 rounded-3xl text-xl font-bold flex items-center justify-center gap-3">
+            <a href={`https://wa.me/${config?.whatsappNumber || ''}?text=${encodeURIComponent('Hola Drive Tropic quiero hacer una reserva')}`} target="_blank" rel="noreferrer" className="bg-brand-secondary text-white w-full max-w-xs py-5 rounded-3xl text-xl font-bold flex items-center justify-center gap-3">
               <FaWhatsapp size={24} /> WhatsApp Reserva
             </a>
           </motion.div>
