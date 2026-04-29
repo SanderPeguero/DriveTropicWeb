@@ -319,9 +319,17 @@ const Admin = () => {
       {/* Mobile Header */}
       <header className="md:hidden bg-brand-primary h-16 flex items-center justify-between px-6 z-40 shrink-0 shadow-lg">
         <img src={logoImg} alt="Logo" className="h-8 w-auto grayscale brightness-200" />
-        <button onClick={() => setIsSidebarOpen(true)} className="text-white p-2">
-          <Menu size={24} />
-        </button>
+        <div className="flex items-center gap-2">
+          {PendingReservationsCount > 0 && (
+            <div className="flex items-center gap-1.5 bg-red-500 text-white px-2 py-0.5 rounded-full text-[10px] font-black tracking-widest uppercase shadow-sm">
+              <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
+              {PendingReservationsCount}
+            </div>
+          )}
+          <button onClick={() => setIsSidebarOpen(true)} className="text-white p-2">
+            <Menu size={24} />
+          </button>
+        </div>
       </header>
 
       {/* Sidebar - Desktop */}
