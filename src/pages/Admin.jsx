@@ -18,8 +18,126 @@ import {
   CheckCircle2,
   XCircle,
   Lock,
-  ShieldCheck
+  ShieldCheck,
+  Menu,
+  ChevronLeft,
+  ChevronRight,
+  Grid,
+  List
 } from 'lucide-react';
+
+const ReservationCalendar = ({ reservations }) => {
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDayObj, setSelectedDayObj] = useState(null);
+
+  const prevMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
+  const nextMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const firstDayOfMonth = new Date(year, month, 1).getDay();
+
+  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+  const blanks = Array.from({ length: firstDayOfMonth }, (_, i) => i);
+
+  const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+  const realToday = new Date();
+  const realTodayStr = `${realToday.getFullYear()}-${String(realToday.getMonth() + 1).padStart(2, '0')}-${String(realToday.getDate()).padStart(2, '0')}`;
+
+  return (
+    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-4 sm:p-5 md:p-8 overflow-hidden">
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-2xl font-black text-brand-primary">{monthNames[month]} {year}</h2>
+        <div className="flex gap-2">
+          <button onClick={prevMonth} className="p-2 bg-gray-50 text-gray-500 rounded-xl hover:bg-gray-100 transition-colors"><ChevronLeft size={20}/></button>
+          <button onClick={nextMonth} className="p-2 bg-gray-50 text-gray-500 rounded-xl hover:bg-gray-100 transition-colors"><ChevronRight size={20}/></button>
+        </div>
+      </div>
+      
+      <div className="overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0">
+        <div className="grid grid-cols-7 gap-2 min-w-[700px]">
+          {['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].map(day => (
+            <div key={day} className="text-center font-bold text-gray-400 text-xs py-2 uppercase tracking-widest">{day}</div>
+          ))}
+          
+          {blanks.map(blank => (
+            <div key={`blank-${blank}`} className="aspect-square bg-gray-50/50 rounded-xl border border-gray-50 p-2 opacity-50"></div>
+          ))}
+          
+          {days.map(day => {
+            const formattedDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            
+            const todaysRes = reservations.filter(r => {
+              if (r.status === 'cancelled') return false;
+              return r.dates?.start <= formattedDate && r.dates?.end >= formattedDate;
+            });
+            const isToday = formattedDate === realTodayStr;
+
+            return (
+              <div 
+                key={day} 
+                onClick={() => setSelectedDayObj({ date: formattedDate, reservations: todaysRes, day })}
+                className={`border rounded-xl p-2 relative min-h-[100px] hover:border-brand-secondary transition-colors cursor-pointer ${isToday ? 'bg-brand-light/30 border-brand-primary' : 'bg-white border-gray-100'}`}
+              >
+                <span className={`text-sm font-black absolute top-2 right-2 ${isToday ? 'text-brand-primary' : 'text-gray-300'}`}>{day}</span>
+                <div className="mt-6 flex flex-col gap-1 w-full relative z-10 pointer-events-none">
+                  {todaysRes.map(res => (
+                    <div key={res.id} className={`text-[10px] sm:text-[11px] font-black px-2 py-1 rounded-lg text-ellipsis overflow-hidden whitespace-nowrap border ${res.status === 'confirmed' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-yellow-50 text-yellow-700 border-yellow-200'}`} title={`${res.carName} (${res.customer?.name})`}>
+                      {res.carName}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Day Detail Modal */}
+      <AnimatePresence>
+        {selectedDayObj && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedDayObj(null)} />
+            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="bg-white rounded-3xl p-6 md:p-8 w-full max-w-md relative z-10 shadow-2xl">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-2xl font-black text-brand-primary mb-1">
+                  Día {selectedDayObj.day} de {monthNames[month]}
+                </h3>
+                <button onClick={() => setSelectedDayObj(null)} className="p-2 text-gray-400 hover:text-brand-primary rounded-xl transition-colors"><X size={24} /></button>
+              </div>
+
+              <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
+                {selectedDayObj.reservations.length === 0 ? (
+                  <div className="text-center py-8 text-gray-400 font-medium">No hay reservas para este día.</div>
+                ) : (
+                  selectedDayObj.reservations.map(res => (
+                    <div key={res.id} className="p-4 border border-gray-100 rounded-2xl bg-gray-50/50">
+                      <div className="flex justify-between items-start mb-2">
+                        <h4 className="font-bold text-brand-primary">{res.carName}</h4>
+                        <span className={`text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-wider border ${res.status === 'confirmed' ? 'bg-green-100 text-green-700 border-green-200' : 'bg-yellow-100 text-yellow-700 border-yellow-200'}`}>
+                          {res.status === 'confirmed' ? 'Conf.' : 'Pend.'}
+                        </span>
+                      </div>
+                      <p className="text-sm font-bold text-gray-700">{res.customer?.name}</p>
+                      <p className="text-xs text-gray-500 mt-1">{res.customer?.phone}</p>
+                      <div className="mt-3 text-xs text-gray-400 font-medium bg-white p-2 rounded-lg border border-gray-100">
+                        {res.dates?.start} <span className="mx-1">→</span> {res.dates?.end}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+    </div>
+  );
+};
 import { useVehicles } from '../context/VehicleContext';
 import { useAdmin } from '../context/AdminContext';
 import { Link } from 'react-router-dom';
@@ -31,7 +149,9 @@ const Admin = () => {
   const { config, updateConfig, reservations, updateReservationStatus, metrics } = useAdmin();
   
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [resViewMode, setResViewMode] = useState('table');
   const [editingVehicle, setEditingVehicle] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [newVehicle, setNewVehicle] = useState({ name: '', year: '', price: '', deposit: '', image: '', category: 'Económicos' });
   const [showAddForm, setShowAddForm] = useState(false);
   
@@ -136,36 +256,107 @@ const Admin = () => {
 
   const PendingReservationsCount = reservations.filter(r => r.status === 'pending').length;
 
-  return (
-    <div className="h-screen bg-gray-50 flex overflow-hidden">
-      {/* Sidebar */}
-      <aside className="w-64 bg-brand-primary text-white p-6 hidden md:flex flex-col flex-shrink-0 h-full overflow-y-auto">
-        <div className="flex flex-col items-center gap-3 mb-12">
-          <div className="mb-2">
-            <img src={logoImg} alt="Logo" className="h-12 w-auto grayscale brightness-200" />
-          </div>
-          <span className="text-[10px] font-black tracking-[0.3em] uppercase text-white/40">Admin Panel</span>
+  const SidebarContent = () => (
+    <>
+      <div className="flex flex-col items-center gap-3 mb-12">
+        <div className="mb-2">
+          <img src={logoImg} alt="Logo" className="h-12 w-auto grayscale brightness-200" />
         </div>
-        
-        <nav className="space-y-2 flex-grow">
-          <button onClick={() => setActiveTab('dashboard')} className={`flex items-center gap-3 w-full p-3 rounded-xl transition-colors ${activeTab === 'dashboard' ? 'bg-white/10 font-bold' : 'hover:bg-white/5 font-medium'}`}>
-            <LayoutDashboard size={20} /> Dashboard
-          </button>
-          <button onClick={() => setActiveTab('reservas')} className={`flex items-center gap-3 w-full p-3 rounded-xl transition-colors ${activeTab === 'reservas' ? 'bg-white/10 font-bold' : 'hover:bg-white/5 font-medium'}`}>
-            <Calendar size={20} /> Reservas <span className="ml-auto bg-brand-secondary text-white text-[10px] px-2 py-0.5 rounded-full">{PendingReservationsCount}</span>
-          </button>
-          <button onClick={() => setActiveTab('flota')} className={`flex items-center gap-3 w-full p-3 rounded-xl transition-colors ${activeTab === 'flota' ? 'bg-white/10 font-bold' : 'hover:bg-white/5 font-medium'}`}>
-            <Car size={20} /> Gestión de Flota
-          </button>
-          <button onClick={() => setActiveTab('config')} className={`flex items-center gap-3 w-full p-3 rounded-xl transition-colors ${activeTab === 'config' ? 'bg-white/10 font-bold' : 'hover:bg-white/5 font-medium'}`}>
-            <Settings size={20} /> Configuración
-          </button>
-        </nav>
+        <span className="text-[10px] font-black tracking-[0.3em] uppercase text-white/40">Admin Panel</span>
+      </div>
+      
+      <nav className="space-y-2 flex-grow">
+        <button 
+          onClick={() => { setActiveTab('dashboard'); setIsSidebarOpen(false); }}
+          className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'dashboard' ? 'bg-brand-secondary text-white shadow-lg shadow-brand-secondary/20' : 'text-white/60 hover:bg-white/5'}`}
+        >
+          <LayoutDashboard size={20} /> Dashboard
+        </button>
+        <button 
+          onClick={() => { setActiveTab('flota'); setIsSidebarOpen(false); }}
+          className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'flota' ? 'bg-brand-secondary text-white shadow-lg shadow-brand-secondary/20' : 'text-white/60 hover:bg-white/5'}`}
+        >
+          <Car size={20} /> Flota
+        </button>
+        <button 
+          onClick={() => { setActiveTab('reservas'); setIsSidebarOpen(false); }}
+          className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'reservas' ? 'bg-brand-secondary text-white shadow-lg shadow-brand-secondary/20' : 'text-white/60 hover:bg-white/5'}`}
+        >
+          <div className="relative flex items-center gap-3 w-full">
+            <Calendar size={20} /> Reservas
+            {PendingReservationsCount > 0 && (
+              <span className="ml-auto bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">{PendingReservationsCount}</span>
+            )}
+          </div>
+        </button>
+        <button 
+          onClick={() => { setActiveTab('config'); setIsSidebarOpen(false); }}
+          className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'config' ? 'bg-brand-secondary text-white shadow-lg shadow-brand-secondary/20' : 'text-white/60 hover:bg-white/5'}`}
+        >
+          <Settings size={20} /> Configuración
+        </button>
+      </nav>
 
-        <Link to="/" className="flex items-center gap-3 p-3 rounded-xl hover:bg-red-500/10 text-red-400 font-bold mt-auto transition-colors">
-          <LogOut size={20} /> Salir al Sitio
+      <div className="pt-8 border-t border-white/5 space-y-4">
+        <Link to="/" className="flex items-center gap-3 px-4 py-3 text-white/40 hover:text-white transition-colors font-bold text-sm">
+          <Eye size={18} /> Ver Sitio
         </Link>
+        <button 
+          onClick={() => {
+            sessionStorage.removeItem('dt_admin_auth');
+            window.location.reload();
+          }}
+          className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all font-bold text-sm"
+        >
+          <LogOut size={18} /> Salir
+        </button>
+      </div>
+    </>
+  );
+
+  return (
+    <div className="h-screen bg-gray-50 flex flex-col md:flex-row overflow-hidden">
+      {/* Mobile Header */}
+      <header className="md:hidden bg-brand-primary h-16 flex items-center justify-between px-6 z-40 shrink-0 shadow-lg">
+        <img src={logoImg} alt="Logo" className="h-8 w-auto grayscale brightness-200" />
+        <button onClick={() => setIsSidebarOpen(true)} className="text-white p-2">
+          <Menu size={24} />
+        </button>
+      </header>
+
+      {/* Sidebar - Desktop */}
+      <aside className="w-64 bg-brand-primary text-white p-6 hidden md:flex flex-col flex-shrink-0 h-full overflow-y-auto">
+        <SidebarContent />
       </aside>
+
+      {/* Sidebar - Mobile Drawer */}
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsSidebarOpen(false)}
+              className="fixed inset-0 bg-black/60 z-50 md:hidden backdrop-blur-sm"
+            />
+            <motion.aside
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed inset-y-0 left-0 w-72 bg-brand-primary text-white p-8 z-50 md:hidden flex flex-col shadow-2xl"
+            >
+              <div className="flex justify-end mb-4">
+                <button onClick={() => setIsSidebarOpen(false)} className="text-white/40 hover:text-white p-2">
+                  <X size={24} />
+                </button>
+              </div>
+              <SidebarContent />
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Main Content */}
       <main className="flex-grow p-4 md:p-12 overflow-y-auto h-full relative">
@@ -177,30 +368,30 @@ const Admin = () => {
               <h1 className="text-4xl font-black text-brand-primary">Vista General</h1>
               <p className="text-gray-500 font-medium">Estadísticas y estado de la plataforma.</p>
             </header>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-              <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 flex items-center gap-6">
-                <div className="w-16 h-16 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center"><Eye size={32} /></div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
+              <div className="bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-gray-100 flex items-center gap-4 md:gap-6">
+                <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-blue-50 text-blue-500 flex shrink-0 items-center justify-center"><Eye size={28} className="md:w-8 md:h-8" /></div>
                 <div>
-                  <p className="text-sm font-black text-gray-400 tracking-widest uppercase">Visitas Pág.</p>
-                  <p className="text-4xl font-black text-brand-primary">{metrics.totalVisits}</p>
+                  <p className="text-xs md:text-sm font-black text-gray-400 tracking-widest uppercase">Visitas Pág.</p>
+                  <p className="text-3xl md:text-4xl font-black text-brand-primary">{metrics.totalVisits}</p>
                 </div>
               </div>
-              <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 flex items-center gap-6">
-                <div className="w-16 h-16 rounded-full bg-green-50 text-green-500 flex items-center justify-center relative">
-                  <span className="absolute top-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white animate-ping"></span>
-                  <span className="absolute top-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></span>
-                  <Users size={32} />
+              <div className="bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-gray-100 flex items-center gap-4 md:gap-6">
+                <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-green-50 text-green-500 flex shrink-0 items-center justify-center relative">
+                  <span className="absolute top-0 right-0 w-3 h-3 md:w-4 md:h-4 bg-green-500 rounded-full border-2 border-white animate-ping"></span>
+                  <span className="absolute top-0 right-0 w-3 h-3 md:w-4 md:h-4 bg-green-500 rounded-full border-2 border-white"></span>
+                  <Users size={28} className="md:w-8 md:h-8" />
                 </div>
                 <div>
-                  <p className="text-sm font-black text-gray-400 tracking-widest uppercase">Sesiones Activas</p>
-                  <p className="text-4xl font-black text-brand-primary">{metrics.activeUsers}</p>
+                  <p className="text-xs md:text-sm font-black text-gray-400 tracking-widest uppercase">Sesiones</p>
+                  <p className="text-3xl md:text-4xl font-black text-brand-primary">{metrics.activeUsers}</p>
                 </div>
               </div>
-              <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 flex items-center gap-6">
-                <div className="w-16 h-16 rounded-full bg-brand-light text-brand-primary flex items-center justify-center"><Calendar size={32} /></div>
+              <div className="bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-gray-100 flex items-center gap-4 md:gap-6">
+                <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-brand-light text-brand-primary flex shrink-0 items-center justify-center"><Calendar size={28} className="md:w-8 md:h-8" /></div>
                 <div>
-                  <p className="text-sm font-black text-gray-400 tracking-widest uppercase">Reservas Pend.</p>
-                  <p className="text-4xl font-black text-brand-primary">{PendingReservationsCount}</p>
+                  <p className="text-xs md:text-sm font-black text-gray-400 tracking-widest uppercase">Reservas</p>
+                  <p className="text-3xl md:text-4xl font-black text-brand-primary">{PendingReservationsCount}</p>
                 </div>
               </div>
             </div>
@@ -219,15 +410,15 @@ const Admin = () => {
                 <Plus size={20} /> Agregar Vehículo
               </button>
             </header>
-            <div className="space-y-12">
+            <div className="space-y-8 md:space-y-12">
               {vehicles.map((cat, catIdx) => (
-                <section key={catIdx} className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-                  <h2 className="text-2xl font-bold mb-8 flex items-center gap-3 italic">
+                <section key={catIdx} className="bg-white rounded-3xl p-4 sm:p-5 md:p-8 shadow-sm border border-gray-100 overflow-hidden">
+                  <h2 className="text-xl md:text-2xl font-bold mb-6 md:mb-8 flex items-center gap-3 italic">
                     {cat.category}
                     <span className="bg-brand-light text-brand-primary text-xs not-italic px-3 py-1 rounded-full">{cat.items.length} autos</span>
                   </h2>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+                  <div className="overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0">
+                    <table className="w-full text-left min-w-[700px]">
                       <thead>
                         <tr className="text-gray-400 text-xs uppercase tracking-widest font-black border-b border-gray-50">
                           <th className="pb-4">Auto</th>
@@ -273,15 +464,30 @@ const Admin = () => {
         {/* VIEW: RESERVAS */}
         {activeTab === 'reservas' && (
           <div className="animate-fade-in">
-            <header className="mb-12">
-              <h1 className="text-4xl font-black text-brand-primary">Reservas</h1>
-              <p className="text-gray-500 font-medium">Base de datos de reservas recibidas por los usuarios.</p>
+            <header className="mb-12 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+              <div>
+                <h1 className="text-4xl font-black text-brand-primary">Reservas</h1>
+                <p className="text-gray-500 font-medium">Base de datos de reservas recibidas por los usuarios.</p>
+              </div>
+              <div className="bg-white p-1 rounded-2xl flex border border-gray-100 shadow-sm w-full sm:w-auto">
+                <button onClick={() => setResViewMode('table')} className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${resViewMode === 'table' ? 'bg-brand-secondary text-white' : 'text-gray-400 hover:bg-gray-50'}`}>
+                  <List size={18} /> Tabla
+                </button>
+                <button onClick={() => setResViewMode('calendar')} className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${resViewMode === 'calendar' ? 'bg-brand-secondary text-white' : 'text-gray-400 hover:bg-gray-50'}`}>
+                  <Grid size={18} /> Calendario
+                </button>
+              </div>
             </header>
-            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 overflow-x-auto">
+            
+            {resViewMode === 'calendar' ? (
+              <ReservationCalendar reservations={reservations} />
+            ) : (
+              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-4 sm:p-5 md:p-8 overflow-hidden">
               {reservations.length === 0 ? (
                 <div className="text-center py-12 text-gray-400 font-medium">Aún no hay reservas registradas.</div>
               ) : (
-                <table className="w-full text-left">
+                <div className="overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0">
+                  <table className="w-full text-left min-w-[800px]">
                   <thead>
                     <tr className="text-gray-400 text-xs uppercase tracking-widest font-black border-b border-gray-50">
                       <th className="pb-4">Cliente</th>
@@ -315,8 +521,10 @@ const Admin = () => {
                     ))}
                   </tbody>
                 </table>
+              </div>
               )}
             </div>
+            )}
           </div>
         )}
 
@@ -327,7 +535,7 @@ const Admin = () => {
               <h1 className="text-4xl font-black text-brand-primary">Configuración</h1>
               <p className="text-gray-500 font-medium">Ajustes globales de la plataforma web.</p>
             </header>
-            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-5 md:p-8">
               <form onSubmit={handleConfigSave} className="space-y-6">
                 <div>
                   <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">WhatsApp de Recepción</label>
